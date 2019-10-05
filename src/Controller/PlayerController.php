@@ -3,15 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Entity\Player;
+use App\Repository\PlayerRepository;
 use App\Repository\QuestionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class PlayerController extends AbstractController
 {
-    public function __construct(QuestionRepository $questions)
+    public function __construct(QuestionRepository $questions, PlayerRepository $players, EntityManagerInterface $em)
     {
         $this->questions = $questions;
+        $this->players = $players;
+        $this->em = $em;
     }
 
     /**
@@ -25,9 +31,48 @@ class PlayerController extends AbstractController
     }
 
     /**
-     * @route("/api/player/getBoard/{game}")
+     * @Route("/api/player/new/{game}", name="player_api_new")
      */
-    public function getBoard(Game $game)
+    public function apiCreateNewPlayer(Game $game, PlayerRepository $players, Request $request)
+    {
+        $username = $request->request->get('playername');
+
+        $player = $this->players->findOneBy([
+            'game' => $game->getId(),
+            'name' => $username
+            ]);
+
+        dump($player);
+
+        if ($player !== null)
+        {
+            return $this->json([
+                'success' => 'ok',
+                'response' => [
+                    'playerId' => $player->getId()
+                ]
+            ]);
+        }
+
+        $player = new Player();
+        $player->setName($username);
+        $player->setGame($game);
+
+        $this->em->persist($player);
+        $this->em->flush();
+
+        return $this->json([
+            'success' => 'ok',
+            'response' => [
+                'playerId' => $player->getId()
+            ]
+        ]);
+    }
+
+    /**
+     * @route("/api/player/getBoard/{game}", name="player_api_get_board")
+     */
+    public function apiGetBoard(Game $game)
     {
         $categories = $game->getCategories();
 
@@ -85,51 +130,14 @@ class PlayerController extends AbstractController
         dump($categoriesBase);
 
         return $this->json(['board' => $categoriesBase]);
+    }
 
-        // return $this->json([ 'board' =>[
-        //     [
-        //         'timestamp' => time(),
-        //         [
-        //             'kind' => 'text',
-        //             'content' => 'Punkte'
-        //         ],
-        //         [
-        //             'kind' => 'text',
-        //             'content' => 'Computer'
-        //         ]
-        //     ],
-        //     [
-        //         [
-        //             // 'kind' => 'question',
-        //             'content' => 100,
-        //             'qId' => 10,
-        //             'playable' => true,
-        //             'correctPlayer' => null
-        //         ],
-        //         [
-        //             // 'kinde' => 'question',
-        //             'answer' => 'i5 6500',
-        //             'qId' => 10,
-        //             'playable' => true,
-        //             'correctPlayer' => null
-        //         ],
-        //     ],
-        //     [
-        //         [
-        //             // 'kinde' => 'question',
-        //             'content' => 200,
-        //             'qId' => 10,
-        //             'playable' => true,
-        //             'correctPlayer' => null
-        //         ],
-        //         [
-        //             // 'kinde' => 'question',
-        //             'answer' => 'i9 9900k',
-        //             'qId' => 10,
-        //             'playable' => true,
-        //             'correctPlayer' => null
-        //         ],
-        //     ],
-        // ]]);
+    /**
+     * @Route("/api/player/buttonPressed/{game}", name="player_api_button_pressed")
+     */
+    public function apiButtonPressed(Game $game, Request $request)
+    {
+        dump($request->get('qId'));
+        return $this->json([]);
     }
 }
