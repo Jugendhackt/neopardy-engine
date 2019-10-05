@@ -5,20 +5,23 @@
 {% block body %}
     <div id="app">
         <table class="table">
-            <tbody>
+            <tbody style="widht:100%">
                 <template v-for="(row, rindex) in board">
-                    <tr :key="'tr-' + rindex">
+                    <tr :key="'tr-' + rindex" style="position:relative; height: 17%; width:100px">
                         <template v-for="(cell, cindex) in row" >
-                            <td  :key="'td-' + rindex + '-' + cindex">
-                            <template v-if="cell.content">
-                                [ cell.content ]
-                            </template>
-                            <template v-else>
-                                <button @click="btnClicken(cell.qId)">
-
-                                </button>
-                                [ cell.answer ]
-                            </template>
+                            <td :key="'td-' + rindex + '-' + cindex" style="width: 25%">
+                                <template v-if="cell.kind">
+                                    <h2 style="text-align: center;">[ cell.content ]</h2>
+                                </template>
+                                <template v-else>
+                                    <template v-if="cell.content">
+                                        <button @click="btnClicken(cell.qId)" 
+                                        style="width: 100%; height: 75px; font-size:25pt">
+                                            [ cell.content ]
+                                        </button>
+                                    </template>
+                                    <template v-else></template>
+                                </template>
                             </td>
                         </template>
                     </tr>
