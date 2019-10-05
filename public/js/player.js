@@ -11,6 +11,7 @@ fetch('/api/player/getBoard/1')
             console.log(el);
         });
         startBoard = response.board;
+        currentAnswer = response.currentAnswer;
         initVue();
     });
 
@@ -24,16 +25,32 @@ function initVue() {
             playername: '',
             debouncedNewPlayer: null,
             showAnswer: false,
-            currentAnswer: null,
+            currentAnswer,
             solutionSubmitted: false
         },
         mounted: function () {
-            this.interval = setInterval(this.updateBoard, 5000);
+            this.interval = setInterval(this.updateBoard, 100);
             this.debouncedNewPlayer = _.debounce(this.createNewPlayer, 200);
+            if (this.currentAnswer)
+            {
+                this.showAnswer = true;
+            }
         },
         watch: {
             playername: function () {
                 this.debouncedNewPlayer(1);
+            },
+            currentAnswer: function () {
+                console.log(this.board);
+                if (this.currentAnswer)
+                {
+                    this.showAnswer = true;
+                }
+                else
+                {
+                    this.solutionSubmitted = false;
+                    this.showAnswer = false;
+                }
             }
         },
         methods: {

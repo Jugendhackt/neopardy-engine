@@ -91,15 +91,18 @@ class PlayerController extends AbstractController
             $questions = $this->questions->findBy(['category' => $categorie->getId()], ['points' => 'ASC']);
 
             foreach ($questions as $key => $question) {
+                $correctPlayer = null;
                 if ($question->getCorrectPlayer() !== null)
                 {
                     $correctPlayer = $question->getCorrectPlayer()->getName();
                 }
-                else
-                {
-                    $correctPlayer = null;
-                }
 
+                $currentAnswer = null;
+
+                if ($game->getCurrentQuestion() !== null)
+                {
+                    $currentAnswer = $game->getCurrentQuestion()->getAnswer();
+                }
 
                 $categoriesBase[$key][] = [
                     'content' => $question->getAnswer(),
@@ -114,7 +117,7 @@ class PlayerController extends AbstractController
         array_unshift($categoriesBase, $titles);
         dump($categoriesBase);
 
-        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $questions[0]->getAnswer()]);
+        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $currentAnswer]);
     }
 
     /**
