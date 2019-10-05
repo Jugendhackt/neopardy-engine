@@ -13,6 +13,8 @@
                 {% block body %}{% endblock %}
             </div>
         {% endblock %}
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            <script src="/js/vue-{{ app.environment }}.js"></script>
+        {% endblock %}
     </body>
 </html>

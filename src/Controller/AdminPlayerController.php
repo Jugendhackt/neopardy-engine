@@ -20,7 +20,7 @@ class AdminPlayerController extends AbstractController
      */
     public function index(PlayerRepository $playerRepository): Response
     {
-        return $this->render('player/index.html.twig', [
+        return $this->render('admin/player/index.html.twig', [
             'players' => $playerRepository->findAll(),
         ]);
     }
@@ -42,7 +42,7 @@ class AdminPlayerController extends AbstractController
             return $this->redirectToRoute('player_index');
         }
 
-        return $this->render('player/new.html.twig', [
+        return $this->render('admin/player/new.html.twig', [
             'player' => $player,
             'form' => $form->createView(),
         ]);
@@ -53,7 +53,7 @@ class AdminPlayerController extends AbstractController
      */
     public function show(Player $player): Response
     {
-        return $this->render('player/show.html.twig', [
+        return $this->render('admin/player/show.html.twig', [
             'player' => $player,
         ]);
     }
@@ -72,7 +72,7 @@ class AdminPlayerController extends AbstractController
             return $this->redirectToRoute('player_index');
         }
 
-        return $this->render('player/edit.html.twig', [
+        return $this->render('admin/player/edit.html.twig', [
             'player' => $player,
             'form' => $form->createView(),
         ]);

@@ -20,7 +20,7 @@ class AdminGameController extends AbstractController
      */
     public function index(GameRepository $gameRepository): Response
     {
-        return $this->render('game/index.html.twig', [
+        return $this->render('admin/game/index.html.twig', [
             'games' => $gameRepository->findAll(),
         ]);
     }
@@ -42,7 +42,7 @@ class AdminGameController extends AbstractController
             return $this->redirectToRoute('game_index');
         }
 
-        return $this->render('game/new.html.twig', [
+        return $this->render('admin/game/new.html.twig', [
             'game' => $game,
             'form' => $form->createView(),
         ]);
@@ -53,7 +53,7 @@ class AdminGameController extends AbstractController
      */
     public function show(Game $game): Response
     {
-        return $this->render('game/show.html.twig', [
+        return $this->render('admin/game/show.html.twig', [
             'game' => $game,
         ]);
     }
@@ -72,7 +72,7 @@ class AdminGameController extends AbstractController
             return $this->redirectToRoute('game_index');
         }
 
-        return $this->render('game/edit.html.twig', [
+        return $this->render('admin/game/edit.html.twig', [
             'game' => $game,
             'form' => $form->createView(),
         ]);

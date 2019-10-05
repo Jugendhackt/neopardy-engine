@@ -20,7 +20,7 @@ class AdminQuestionController extends AbstractController
      */
     public function index(QuestionRepository $questionRepository): Response
     {
-        return $this->render('question/index.html.twig', [
+        return $this->render('admin/question/index.html.twig', [
             'questions' => $questionRepository->findAll(),
         ]);
     }
@@ -42,7 +42,7 @@ class AdminQuestionController extends AbstractController
             return $this->redirectToRoute('question_index');
         }
 
-        return $this->render('question/new.html.twig', [
+        return $this->render('admin/question/new.html.twig', [
             'question' => $question,
             'form' => $form->createView(),
         ]);
@@ -53,7 +53,7 @@ class AdminQuestionController extends AbstractController
      */
     public function show(Question $question): Response
     {
-        return $this->render('question/show.html.twig', [
+        return $this->render('admin/question/show.html.twig', [
             'question' => $question,
         ]);
     }
@@ -72,7 +72,7 @@ class AdminQuestionController extends AbstractController
             return $this->redirectToRoute('question_index');
         }
 
-        return $this->render('question/edit.html.twig', [
+        return $this->render('admin/question/edit.html.twig', [
             'question' => $question,
             'form' => $form->createView(),
         ]);
