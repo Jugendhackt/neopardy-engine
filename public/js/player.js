@@ -12,6 +12,7 @@ fetch('/api/player/getBoard/1')
         });
         startBoard = response.board;
         currentAnswer = response.currentAnswer;
+        player = response.player;
         initVue();
     });
 
@@ -26,11 +27,12 @@ function initVue() {
             debouncedNewPlayer: null,
             showAnswer: false,
             currentAnswer,
-            solutionSubmitted: false
+            solutionSubmitted: false,
+            player
         },
         mounted: function () {
-            this.interval = setInterval(this.updateBoard, 100);
-            this.debouncedNewPlayer = _.debounce(this.createNewPlayer, 200);
+            this.interval = setInterval(this.updateBoard, 1000);
+            this.debouncedNewPlayer = _.debounce(this.createNewPlayer, 500);
             if (this.currentAnswer)
             {
                 this.showAnswer = true;
@@ -57,13 +59,21 @@ function initVue() {
             updateBoard: function () {
                 let that = this;
 
-                fetch('/api/player/getBoard/1')
+                const data = new URLSearchParams();
+                data.append('playername', this.playername.toString());
+
+                fetch('/api/player/getBoard/1',
+                {
+                    method: 'POST',
+                    body: data
+                })
                     .then(function (response) {
                         return response.json();
                     })
                     .then(function (response) {
                         that.board = response.board;
                         that.currentAnswer = response.currentAnswer;
+                        that.player = response.player;
                     });
             },
             btnClicken: function (qId) {
@@ -78,6 +88,7 @@ function initVue() {
             createNewPlayer: function () {
                 console.log('new player');
                 const data = new URLSearchParams();
+
                 data.append('playername', this.playername.toString());
 
                 fetch('/api/player/new/1', {

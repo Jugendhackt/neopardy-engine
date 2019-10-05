@@ -76,9 +76,21 @@ class PlayerController extends AbstractController
     /**
      * @route("/api/player/getBoard/{game}", name="player_api_get_board")
      */
-    public function apiGetBoard(Game $game)
+    public function apiGetBoard(Game $game, Request $request)
     {
         $categories = $game->getCategories();
+        $playername = $request->request->get('playername');
+
+        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+
+        if ($player !== null)
+        {
+            $player = [
+                'name' => $player->getName(),
+                'id' => $player->getId(),
+                'points' => $player->getPoints()
+            ];
+        }
 
         $titles = [];
 
@@ -117,7 +129,7 @@ class PlayerController extends AbstractController
         array_unshift($categoriesBase, $titles);
         dump($categoriesBase);
 
-        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $currentAnswer]);
+        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $currentAnswer, 'player' => $player]);
     }
 
     /**
