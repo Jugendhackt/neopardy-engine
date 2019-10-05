@@ -35,18 +35,19 @@ class Question
     private $category;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Player", inversedBy="questions")
-     */
-    private $player;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $solution;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\QuestionPlayer", mappedBy="Question", orphanRemoval=true)
+     */
+    private $questionPlayers;
+
     public function __construct()
     {
         $this->player = new ArrayCollection();
+        $this->questionPlayers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,32 +91,6 @@ class Question
         return $this;
     }
 
-    /**
-     * @return Collection|Player[]
-     */
-    public function getPlayer(): Collection
-    {
-        return $this->player;
-    }
-
-    public function addPlayer(Player $player): self
-    {
-        if (!$this->player->contains($player)) {
-            $this->player[] = $player;
-        }
-
-        return $this;
-    }
-
-    public function removePlayer(Player $player): self
-    {
-        if ($this->player->contains($player)) {
-            $this->player->removeElement($player);
-        }
-
-        return $this;
-    }
-
     public function getSolution(): ?string
     {
         return $this->solution;
@@ -131,5 +106,36 @@ class Question
     public function __toString()
     {
         return $this->getAnswer() . ' - ' . $this->getSolution();
+    }
+
+    /**
+     * @return Collection|QuestionPlayer[]
+     */
+    public function getQuestionPlayers(): Collection
+    {
+        return $this->questionPlayers;
+    }
+
+    public function addQuestionPlayer(QuestionPlayer $questionPlayer): self
+    {
+        if (!$this->questionPlayers->contains($questionPlayer)) {
+            $this->questionPlayers[] = $questionPlayer;
+            $questionPlayer->setQuestion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionPlayer(QuestionPlayer $questionPlayer): self
+    {
+        if ($this->questionPlayers->contains($questionPlayer)) {
+            $this->questionPlayers->removeElement($questionPlayer);
+            // set the owning side to null (unless already changed)
+            if ($questionPlayer->getQuestion() === $this) {
+                $questionPlayer->setQuestion(null);
+            }
+        }
+
+        return $this;
     }
 }

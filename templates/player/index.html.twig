@@ -3,31 +3,38 @@
 {# {% block title %}{% endblock %} #}
 
 {% block body %}
-    <div id="app">
-        <table class="table">
-            <tbody style="widht:100%">
-                <template v-for="(row, rindex) in board">
-                    <tr :key="'tr-' + rindex" style="position:relative; height: 17%; width:100px">
-                        <template v-for="(cell, cindex) in row" >
-                            <td :key="'td-' + rindex + '-' + cindex" style="width: 25%">
-                                <template v-if="cell.kind">
-                                    <h2 style="text-align: center;">[ cell.content ]</h2>
-                                </template>
-                                <template v-else>
-                                    <template v-if="cell.content">
-                                        <button @click="btnClicken(cell.qId)" 
-                                        style="width: 100%; height: 75px; font-size:25pt">
-                                            [ cell.content ]
-                                        </button>
+    <div id="app" :class="{ 'bg-primary': solutionSubmitted }">
+        <div id="grid" v-show="!showAnswer">
+            <table class="table">
+                <tbody style="widht:100%">
+                    <template v-for="(row, rindex) in board">
+                        <tr :key="'tr-' + rindex" style="position:relative; height: 17%; width:100px">
+                            <template v-for="(cell, cindex) in row" >
+                                <td :key="'td-' + rindex + '-' + cindex" style="width: 25%">
+                                    <template v-if="cell.kind">
+                                        <h2 style="text-align: center;">[ cell.content ]</h2>
                                     </template>
-                                    <template v-else></template>
-                                </template>
-                            </td>
-                        </template>
-                    </tr>
-                </template>
-            </tbody>
-        </table>
+                                    <template v-else>
+                                        <template v-if="cell.content">
+                                            <button @click="btnClicken(cell.qId)"
+                                            style="width: 100%; height: 75px; font-size:25pt">
+                                                [ cell.content ]
+                                            </button>
+                                        </template>
+                                        <template v-else></template>
+                                    </template>
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+        <div id="answer-screen" v-show="showAnswer">
+            <h1 class="text-center answer">[ currentAnswer ]</h1>
+            <hr>
+            <button class="solution-button" @click="submitSolution">BÖÖÖÖÖÖP!</button>
+        </div>
 
         <form action="" method="post">
             <label for="playername">Dein Name</label>

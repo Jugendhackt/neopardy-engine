@@ -34,13 +34,13 @@ class Player
     private $game;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Question", mappedBy="player")
+     * @ORM\OneToMany(targetEntity="App\Entity\QuestionPlayer", mappedBy="Player", orphanRemoval=true)
      */
-    private $questions;
+    private $questionPlayers;
 
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->questionPlayers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,36 +84,39 @@ class Player
         return $this;
     }
 
-    /**
-     * @return Collection|Question[]
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
-    public function addQuestion(Question $question): self
-    {
-        if (!$this->questions->contains($question)) {
-            $this->questions[] = $question;
-            $question->addPlayer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuestion(Question $question): self
-    {
-        if ($this->questions->contains($question)) {
-            $this->questions->removeElement($question);
-            $question->removePlayer($this);
-        }
-
-        return $this;
-    }
-
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @return Collection|QuestionPlayer[]
+     */
+    public function getQuestionPlayers(): Collection
+    {
+        return $this->questionPlayers;
+    }
+
+    public function addQuestionPlayer(QuestionPlayer $questionPlayer): self
+    {
+        if (!$this->questionPlayers->contains($questionPlayer)) {
+            $this->questionPlayers[] = $questionPlayer;
+            $questionPlayer->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestionPlayer(QuestionPlayer $questionPlayer): self
+    {
+        if ($this->questionPlayers->contains($questionPlayer)) {
+            $this->questionPlayers->removeElement($questionPlayer);
+            // set the owning side to null (unless already changed)
+            if ($questionPlayer->getPlayer() === $this) {
+                $questionPlayer->setPlayer(null);
+            }
+        }
+
+        return $this;
     }
 }

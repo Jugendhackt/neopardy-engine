@@ -22,7 +22,10 @@ function initVue() {
             message: 'Hallo Welt',
             board: startBoard,
             playername: '',
-            debouncedNewPlayer: null
+            debouncedNewPlayer: null,
+            showAnswer: false,
+            currentAnswer: null,
+            solutionSubmitted: false
         },
         mounted: function () {
             this.interval = setInterval(this.updateBoard, 5000);
@@ -43,6 +46,7 @@ function initVue() {
                     })
                     .then(function (response) {
                         that.board = response.board;
+                        that.currentAnswer = response.currentAnswer;
                     });
             },
             btnClicken: function (qId) {
@@ -63,6 +67,14 @@ function initVue() {
                     .then(function (response) {
                         return response.json();
                     });
+            },
+            submitSolution: function ()
+            {
+                fetch('/api/player/buttonPressed/1', {
+                    method: "POST",
+                    body: { playername: this.playername }
+                });
+                this.solutionSubmitted = true;
             }
         }
     });

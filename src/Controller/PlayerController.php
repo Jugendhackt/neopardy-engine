@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Game;
 use App\Entity\Player;
+use App\Entity\Question;
 use App\Repository\PlayerRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -121,7 +122,7 @@ class PlayerController extends AbstractController
                     'answer' => $question->getAnswer(),
                     'qId' => $question->getId(),
                     'playable' => true,
-                    'correctPlayer' => 'null'
+                    'correctPlayer' => null
                 ];
             }
         }
@@ -129,7 +130,7 @@ class PlayerController extends AbstractController
         array_unshift($categoriesBase, $titles);
         dump($categoriesBase);
 
-        return $this->json(['board' => $categoriesBase]);
+        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $questions[0]->getAnswer()]);
     }
 
     /**
@@ -137,7 +138,24 @@ class PlayerController extends AbstractController
      */
     public function apiButtonPressed(Game $game, Request $request)
     {
-        dump($request->get('qId'));
+        $qId = $request->request->get('qId');
+
+        $question = $this->questions->find($qId);
+        $game->setCurrentQuestion($question);
+        return $this->json([]);
+    }
+
+    /**
+     * @Route("/api/player/solutionSubmitted/{game}", name="player_api_solution_submitted")
+     */
+    public function apiSolutionSubmitted(Game $game, Request $request)
+    {
+        $playername = $request->request->get('playername');
+
+        $player = $this->players->findOneBy(['game' => $game->getId(), 'playername' => $playername]);
+
+        // $this->em->persist($);
+
         return $this->json([]);
     }
 }

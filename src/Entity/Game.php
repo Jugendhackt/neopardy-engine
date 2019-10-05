@@ -33,6 +33,11 @@ class Game
      */
     private $categories;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Question")
+     */
+    private $currentQuestion;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
@@ -120,5 +125,17 @@ class Game
 
     public function __toString() {
         return $this->name;
+    }
+
+    public function getCurrentQuestion(): ?Question
+    {
+        return $this->currentQuestion;
+    }
+
+    public function setCurrentQuestion(?Question $currentQuestion): self
+    {
+        $this->currentQuestion = $currentQuestion;
+
+        return $this;
     }
 }
