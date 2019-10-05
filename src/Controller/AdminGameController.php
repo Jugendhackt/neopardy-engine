@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/admin/game")
  */
-class GameController extends AbstractController
+class AdminGameController extends AbstractController
 {
     /**
      * @Route("/", name="game_index", methods={"GET"})

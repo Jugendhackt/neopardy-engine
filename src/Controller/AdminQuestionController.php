@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/admin/question")
  */
-class QuestionController extends AbstractController
+class AdminQuestionController extends AbstractController
 {
     /**
      * @Route("/", name="question_index", methods={"GET"})
