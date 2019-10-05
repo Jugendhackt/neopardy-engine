@@ -13,6 +13,7 @@ class QuestionType extends AbstractType
     {
         $builder
             ->add('answer')
+            ->add('solution')
             ->add('points')
             ->add('category')
             ->add('player')
