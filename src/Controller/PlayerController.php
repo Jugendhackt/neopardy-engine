@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Entity\Player;
 use App\Entity\Question;
-use App\Entity\QuestionPlayer;
+use App\Entity\GamePlayer;
 use App\Repository\PlayerRepository;
+use App\Repository\GamePlayerRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,10 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PlayerController extends AbstractController
 {
-    public function __construct(QuestionRepository $questions, PlayerRepository $players, EntityManagerInterface $em)
+    public function __construct(QuestionRepository $questions, PlayerRepository $players, EntityManagerInterface $em, GamePlayerRepository $gamePlayers)
     {
         $this->questions = $questions;
         $this->players = $players;
+        $this->gamePlayers = $gamePlayers;
         $this->em = $em;
     }
 
@@ -153,12 +155,28 @@ class PlayerController extends AbstractController
     {
         $playername = $request->request->get('playername');
 
-        $player = $this->players->findOneBy(['game' => $game->getId(), 'playername' => $playername]);
-        $question = $this->questions->findBy($requeest->request->get('qId'));
+        dump($playername);
 
-        $questionPlayer = new QuestionPlayer();
-        $questionPlayer->setQuestion($question);
-        $questionPlayer->setPlayer($player);
+        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+
+        if ($player === null)
+        {
+            return $this->json([]);
+        }
+
+        $gamePlayer = $this->gamePlayers->findOneBy(['player' => $player->getId(), 'game' => $game->getId()]);
+
+        if ($gamePlayer !== null)
+        {
+            return $this->json([]);
+        }
+
+        $gamePlayer = new GamePlayer();
+        $gamePlayer->setGame($game);
+        $gamePlayer->setPlayer($player);
+
+        $this->em->persist($gamePlayer);
+        $this->em->flush();
 
         return $this->json([]);
     }

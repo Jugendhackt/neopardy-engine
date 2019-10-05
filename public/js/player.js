@@ -70,9 +70,12 @@ function initVue() {
             },
             submitSolution: function ()
             {
-                fetch('/api/player/buttonPressed/1', {
+                const data = new URLSearchParams();
+                data.append('playername', this.playername.toString());
+
+                fetch('/api/player/solutionSubmitted/1', {
                     method: "POST",
-                    body: { playername: this.playername, qId }
+                    body: data
                 });
                 this.solutionSubmitted = true;
             }
