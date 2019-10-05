@@ -39,11 +39,6 @@ class Question
      */
     private $solution;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\QuestionPlayer", mappedBy="Question", orphanRemoval=true)
-     */
-    private $questionPlayers;
-
     public function __construct()
     {
         $this->player = new ArrayCollection();
@@ -106,36 +101,5 @@ class Question
     public function __toString()
     {
         return $this->getAnswer() . ' - ' . $this->getSolution();
-    }
-
-    /**
-     * @return Collection|QuestionPlayer[]
-     */
-    public function getQuestionPlayers(): Collection
-    {
-        return $this->questionPlayers;
-    }
-
-    public function addQuestionPlayer(QuestionPlayer $questionPlayer): self
-    {
-        if (!$this->questionPlayers->contains($questionPlayer)) {
-            $this->questionPlayers[] = $questionPlayer;
-            $questionPlayer->setQuestion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuestionPlayer(QuestionPlayer $questionPlayer): self
-    {
-        if ($this->questionPlayers->contains($questionPlayer)) {
-            $this->questionPlayers->removeElement($questionPlayer);
-            // set the owning side to null (unless already changed)
-            if ($questionPlayer->getQuestion() === $this) {
-                $questionPlayer->setQuestion(null);
-            }
-        }
-
-        return $this;
     }
 }

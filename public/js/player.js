@@ -72,7 +72,7 @@ function initVue() {
             {
                 fetch('/api/player/buttonPressed/1', {
                     method: "POST",
-                    body: { playername: this.playername }
+                    body: { playername: this.playername, qId }
                 });
                 this.solutionSubmitted = true;
             }

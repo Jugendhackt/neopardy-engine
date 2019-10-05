@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Entity\Player;
 use App\Entity\Question;
+use App\Entity\QuestionPlayer;
 use App\Repository\PlayerRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -153,8 +154,11 @@ class PlayerController extends AbstractController
         $playername = $request->request->get('playername');
 
         $player = $this->players->findOneBy(['game' => $game->getId(), 'playername' => $playername]);
+        $question = $this->questions->findBy($requeest->request->get('qId'));
 
-        // $this->em->persist($);
+        $questionPlayer = new QuestionPlayer();
+        $questionPlayer->setQuestion($question);
+        $questionPlayer->setPlayer($player);
 
         return $this->json([]);
     }

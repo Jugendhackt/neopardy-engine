@@ -34,13 +34,14 @@ class Player
     private $game;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\QuestionPlayer", mappedBy="Player", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\GamePlayer", mappedBy="player")
      */
-    private $questionPlayers;
+    private $gamePlayers;
 
     public function __construct()
     {
         $this->questionPlayers = new ArrayCollection();
+        $this->gamePlayers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,30 +91,30 @@ class Player
     }
 
     /**
-     * @return Collection|QuestionPlayer[]
+     * @return Collection|GamePlayer[]
      */
-    public function getQuestionPlayers(): Collection
+    public function getGamePlayers(): Collection
     {
-        return $this->questionPlayers;
+        return $this->gamePlayers;
     }
 
-    public function addQuestionPlayer(QuestionPlayer $questionPlayer): self
+    public function addGamePlayer(GamePlayer $gamePlayer): self
     {
-        if (!$this->questionPlayers->contains($questionPlayer)) {
-            $this->questionPlayers[] = $questionPlayer;
-            $questionPlayer->setPlayer($this);
+        if (!$this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers[] = $gamePlayer;
+            $gamePlayer->setPlayer($this);
         }
 
         return $this;
     }
 
-    public function removeQuestionPlayer(QuestionPlayer $questionPlayer): self
+    public function removeGamePlayer(GamePlayer $gamePlayer): self
     {
-        if ($this->questionPlayers->contains($questionPlayer)) {
-            $this->questionPlayers->removeElement($questionPlayer);
+        if ($this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers->removeElement($gamePlayer);
             // set the owning side to null (unless already changed)
-            if ($questionPlayer->getPlayer() === $this) {
-                $questionPlayer->setPlayer(null);
+            if ($gamePlayer->getPlayer() === $this) {
+                $gamePlayer->setPlayer(null);
             }
         }
 
