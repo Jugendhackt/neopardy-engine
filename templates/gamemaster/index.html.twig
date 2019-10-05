@@ -44,5 +44,9 @@
             <p style="text-align: center; color: black;"><h1 style="font-size: 1500%">N</h1></p>
         </div>
     </a>
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="/js/gamemaster.js"></script>
 {% endblock %}

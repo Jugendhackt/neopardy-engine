@@ -31,7 +31,7 @@ fetch('/api/player/getBoard/1')
                 updateBoard: function ()
                 {
                     let that = this;
-    
+
                     fetch('/api/player/getBoard/1')
                         .then(function (response) {
                             return response.json();
@@ -45,4 +45,3 @@ fetch('/api/player/getBoard/1')
             }
         });
     }
-    
