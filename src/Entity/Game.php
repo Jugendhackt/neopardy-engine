@@ -28,9 +28,15 @@ class Game
      */
     private $players;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="game")
+     */
+    private $categories;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +81,37 @@ class Game
             // set the owning side to null (unless already changed)
             if ($player->getGame() === $this) {
                 $player->setGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+            $category->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+            // set the owning side to null (unless already changed)
+            if ($category->getGame() === $this) {
+                $category->setGame(null);
             }
         }
 

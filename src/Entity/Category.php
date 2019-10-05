@@ -7,9 +7,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PlayerRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
  */
-class Player
+class Category
 {
     /**
      * @ORM\Id()
@@ -24,17 +24,12 @@ class Player
     private $name;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $points;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Game", inversedBy="players")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Game", inversedBy="categories")
      */
     private $game;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Question", mappedBy="player")
+     * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="category")
      */
     private $questions;
 
@@ -56,18 +51,6 @@ class Player
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getPoints(): ?int
-    {
-        return $this->points;
-    }
-
-    public function setPoints(?int $points): self
-    {
-        $this->points = $points;
 
         return $this;
     }
@@ -96,7 +79,7 @@ class Player
     {
         if (!$this->questions->contains($question)) {
             $this->questions[] = $question;
-            $question->addPlayer($this);
+            $question->setCategory($this);
         }
 
         return $this;
@@ -106,7 +89,10 @@ class Player
     {
         if ($this->questions->contains($question)) {
             $this->questions->removeElement($question);
-            $question->removePlayer($this);
+            // set the owning side to null (unless already changed)
+            if ($question->getCategory() === $this) {
+                $question->setCategory(null);
+            }
         }
 
         return $this;
