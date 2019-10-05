@@ -21,51 +21,201 @@ class PlayerController extends AbstractController
     /**
      * @route("/api/player/getBoard/{game}")
      */
-    public function getBoard(Game $game)
+    public function getBoard($game)
     {
         return $this->json([ 'board' =>[
             [
                 'timestamp' => time(),
                 [
                     'kind' => 'text',
-                    'content' => 'Punkte'
+                    'content' => 'Computer'
                 ],
                 [
                     'kind' => 'text',
-                    'content' => 'Computer'
+                    'content' => 'CCC'
+                ],
+                [
+                    'kind' => 'text',
+                    'content' => 'Klima'
+                ],
+                [
+                    'kind' => 'text',
+                    'content' => 'Luul'
                 ]
             ],
             [
                 [
                     // 'kind' => 'question',
                     'content' => 100,
-                    'qId' => 10,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
                     'answer' => 'i5 6500',
                     'qId' => 10,
                     'playable' => true,
                     'correctPlayer' => null
                 ],
+                [
+                    // 'kind' => 'question',
+                    'content' => 100,
+                    'answer' => 'Ein Baum',
+                    'qId' => 11,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kind' => 'question',
+                    'content' => 100,
+                    'answer' => 'Ein Baum',
+                    'qId' => 12,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kind' => 'question',
+                    'content' => 100,
+                    'answer' => 'Ein Baum',
+                    'qId' => 13,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ]
             ],
             [
                 [
                     // 'kinde' => 'question',
                     'content' => 200,
-                    'qId' => 10,
+                    'answer' => 'i9 9900k',
+                    'qId' => 20,
                     'playable' => true,
                     'correctPlayer' => null
                 ],
                 [
                     // 'kinde' => 'question',
+                    'content' => 200,
                     'answer' => 'i9 9900k',
-                    'qId' => 10,
+                    'qId' => 21,
                     'playable' => true,
                     'correctPlayer' => null
                 ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 200,
+                    'answer' => 'i9 9900k',
+                    'qId' => 22,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 200,
+                    'answer' => 'i9 9900k',
+                    'qId' => 23,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ]
+                
+            ],
+            [
+                [
+                    // 'kinde' => 'question',
+                    'content' => 300,
+                    'answer' => 'i9 9900k',
+                    'qId' => 30,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 300,
+                    'answer' => 'i9 9900k',
+                    'qId' => 31,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 300,
+                    'answer' => 'i9 9900k',
+                    'qId' => 32,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 300,
+                    'answer' => 'i9 9900k',
+                    'qId' => 33,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ]
+                
+            ],
+            [
+                [
+                    // 'kinde' => 'question',
+                    'content' => 400,
+                    'answer' => 'i9 9900k',
+                    'qId' => 40,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 400,
+                    'answer' => 'i9 9900k',
+                    'qId' => 41,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 400,
+                    'answer' => 'i9 9900k',
+                    'qId' => 42,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 400,
+                    'answer' => 'i9 9900k',
+                    'qId' => 43,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ]
+                
+            ],
+            [
+                [
+                    // 'kinde' => 'question',
+                    'content' => 500,
+                    'answer' => 'i9 9900k',
+                    'qId' => 50,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 500,
+                    'answer' => 'i9 9900k',
+                    'qId' => 51,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 500,
+                    'answer' => 'i9 9900k',
+                    'qId' => 52,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ],
+                [
+                    // 'kinde' => 'question',
+                    'content' => 500,
+                    'answer' => 'i9 9900k',
+                    'qId' => 53,
+                    'playable' => true,
+                    'correctPlayer' => null
+                ]
+                
             ],
         ]]);
     }

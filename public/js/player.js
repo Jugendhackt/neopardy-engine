@@ -45,6 +45,7 @@ function initVue()
             btnClicken: function (btn)
             {
                 console.log(btn);
+                
             }
         }
     });
