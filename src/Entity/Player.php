@@ -38,10 +38,16 @@ class Player
      */
     private $gamePlayers;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="correctPlayer")
+     */
+    private $correctQuestions;
+
     public function __construct()
     {
         $this->questionPlayers = new ArrayCollection();
         $this->gamePlayers = new ArrayCollection();
+        $this->correctQuestions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +121,37 @@ class Player
             // set the owning side to null (unless already changed)
             if ($gamePlayer->getPlayer() === $this) {
                 $gamePlayer->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Question[]
+     */
+    public function getCorrectQuestions(): Collection
+    {
+        return $this->correctQuestions;
+    }
+
+    public function addCorrectQuestion(Question $correctQuestion): self
+    {
+        if (!$this->correctQuestions->contains($correctQuestion)) {
+            $this->correctQuestions[] = $correctQuestion;
+            $correctQuestion->setCorrectPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCorrectQuestion(Question $correctQuestion): self
+    {
+        if ($this->correctQuestions->contains($correctQuestion)) {
+            $this->correctQuestions->removeElement($correctQuestion);
+            // set the owning side to null (unless already changed)
+            if ($correctQuestion->getCorrectPlayer() === $this) {
+                $correctQuestion->setCorrectPlayer(null);
             }
         }
 

@@ -11,14 +11,17 @@
                         <tr :key="'tr-' + rindex" style="position:relative; height: 17%; width:100px">
                             <template v-for="(cell, cindex) in row" >
                                 <td :key="'td-' + rindex + '-' + cindex" style="width: 25%">
-                                    <template v-if="cell.kind">
+                                    <template v-if="!cell.points">
                                         <h2 style="text-align: center;">[ cell.content ]</h2>
                                     </template>
+                                    <template v-else-if="cell.correctPlayer">
+                                        <h2 class="text-center text-success">[ cell.correctPlayer ]</h2>
+                                    </template>
                                     <template v-else>
-                                        <template v-if="cell.content">
+                                        <template v-if="cell.points">
                                             <button @click="btnClicken(cell.qId)"
                                             style="width: 100%; height: 75px; font-size:25pt">
-                                                [ cell.content ]
+                                                [ cell.points ]
                                             </button>
                                         </template>
                                         <template v-else></template>

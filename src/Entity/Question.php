@@ -39,6 +39,11 @@ class Question
      */
     private $solution;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="correctQuestions")
+     */
+    private $correctPlayer;
+
     public function __construct()
     {
         $this->player = new ArrayCollection();
@@ -101,5 +106,17 @@ class Question
     public function __toString()
     {
         return $this->getAnswer() . ' - ' . $this->getSolution();
+    }
+
+    public function getCorrectPlayer(): ?Player
+    {
+        return $this->correctPlayer;
+    }
+
+    public function setCorrectPlayer(?Player $correctPlayer): self
+    {
+        $this->correctPlayer = $correctPlayer;
+
+        return $this;
     }
 }

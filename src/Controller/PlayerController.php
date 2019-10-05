@@ -80,39 +80,9 @@ class PlayerController extends AbstractController
     {
         $categories = $game->getCategories();
 
-        $titles = [
-            [
-                'content' => 'Punkte'
-            ]
-        ];
+        $titles = [];
 
-        $categoriesBase = [
-            [
-                [
-                    'content' => '100',
-                ]
-            ],
-            [
-                [
-                    'content' => '200',
-                ]
-            ],
-            [
-                [
-                    'content' => '300',
-                ]
-            ],
-            [
-                [
-                    'content' => '400',
-                ]
-            ],
-            [
-                [
-                    'content' => '500',
-                ]
-            ],
-        ];
+        $categoriesBase = [];
 
         foreach ($categories as $categorie) {
             $titles[] = ['content' => $categorie->getName()];
@@ -121,11 +91,22 @@ class PlayerController extends AbstractController
             $questions = $this->questions->findBy(['category' => $categorie->getId()], ['points' => 'ASC']);
 
             foreach ($questions as $key => $question) {
+                if ($question->getCorrectPlayer() !== null)
+                {
+                    $correctPlayer = $question->getCorrectPlayer()->getName();
+                }
+                else
+                {
+                    $correctPlayer = null;
+                }
+
+
                 $categoriesBase[$key][] = [
-                    'answer' => $question->getAnswer(),
+                    'content' => $question->getAnswer(),
                     'qId' => $question->getId(),
                     'playable' => true,
-                    'correctPlayer' => null
+                    'correctPlayer' => $correctPlayer,
+                    'points' => $question->getPoints()
                 ];
             }
         }
@@ -137,14 +118,17 @@ class PlayerController extends AbstractController
     }
 
     /**
-     * @Route("/api/player/buttonPressed/{game}", name="player_api_button_pressed")
+     * @Route("/api/player/selectQuestion/{game}", name="player_api_question_select")
      */
-    public function apiButtonPressed(Game $game, Request $request)
+    public function apiQuestionSelect(Game $game, Request $request)
     {
         $qId = $request->request->get('qId');
 
         $question = $this->questions->find($qId);
         $game->setCurrentQuestion($question);
+        $this->em->persist($game);
+        $this->em->flush();
+
         return $this->json([]);
     }
 

@@ -50,9 +50,12 @@ function initVue() {
                     });
             },
             btnClicken: function (qId) {
-                fetch('/api/player/buttonPressed/1', {
+                const data = new URLSearchParams();
+                data.append('qId', qId);
+
+                fetch('/api/player/selectQuestion/1', {
                     method: "POST",
-                    body: { qId, playername: this.playername }
+                    body: data
                 });
             },
             createNewPlayer: function () {
