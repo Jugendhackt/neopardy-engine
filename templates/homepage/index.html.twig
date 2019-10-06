@@ -3,29 +3,43 @@
 {% block title %}Hello HomepageController!{% endblock %}
 
 {% block body %}
-    <div class="card" style="text-align:center; height: 80px;position:absolute;right: 20%;left:20%;top:10px">
-        <div class="card-body">
-            <h1>
-                Neopardy
-            </h1>
-        </div>
-    </div>
-    <div style="position:absolute; right: 2%; top:2%">
-        <button onclick="window.location.href='/game/new'" class="btn btn-dark">
-            New Game
-        </button>
-    </div>
+    <div style="background-image:url('background.jpg');background-size:cover; position:absolute; top:0px;bottom:0px;left:0px;right:0px">
+        <div style="position:absolute; left:15%;right:15%;top:3%;bottom:0px; background-color:white">
+            <div class="card" style="text-align:center; height: 80px;position:absolute;right: 35%;left:35%;top:10px">
+                <div class="card-body">
+                    <h1>
+                        Neopardy
+                    </h1>
+                </div>
+            </div>
+            <div style="position:absolute; right:17%; top:2%">
+                <button onclick="window.location.href='/game/new'" class="btn btn-dark">
+                    New Game
+                </button>
+            </div>
 
-    <div class="card" style="width: 18rem;position: absolute; top: 20%">
-        <div class="card-body">
-            <h5 class="card-title">Jeopardy</h5>
-            <p class="card-text">
-                Das Prinzip der Webapp "Neopardy" ist inspiriert von der US-Amerikanischen Quizshow "Jeopardy".
-                Bei Jeopardy geht es darum, zu einer gegebenen Antwort eine passende Frage zu stellen.
-                So wäre beispielsweise bei der gegebenen Antwort "Donald Trump", die Frage "Wer ist momentan Präsident
-                der vereinigten Staaten und hat ganz ganz dolle einen Waffel?"
-            </p>
-            <a href="https://de.wikipedia.org/wiki/Jeopardy!" class="btn btn-primary">Wikipedia</a>
+            <div style="position:absolute; top: 20%; right: 35%">
+                <img src="alpaka.png" style="width: 200px;height:200px">
+            </div>
+
+            <div class="card" style="width: 18rem;position: absolute; top: 20%; left: 5%">
+                <div class="card-body">
+                    <h5 class="card-title">Das Spielprinzip</h5>
+                    <p class="card-text">
+                        Das Prinzip der Webapp "Neopardy" ist inspiriert von der US-Amerikanischen Quizshow "Jeopardy".
+                        Bei Jeopardy geht es darum, zu einer gegebenen Antwort eine passende Frage zu stellen.
+                        So wäre beispielsweise bei der gegebenen Antwort "Donald Trump", die Frage "Wer ist momentan Präsident
+                        der vereinigten Staaten und hat ganz ganz dolle einen Waffel?"
+                    </p>
+                    <a href="https://de.wikipedia.org/wiki/Jeopardy!" class="btn btn-primary">Wikipedia</a>
+                </div>
+            </div>
+            <div style="position:absolute;bottom:0px;right:0px;left:0px;background-color: gray; height: 7%">
+                <button onclick="window.location.href='https://github.com/Jugendhackt/neopardy-engine/'" class="btn btn-dark"
+                    style="height: 70%; position: relative; top: 15%; left: 1%">
+                    Find us on Github
+                </button>
+            </div>
         </div>
     </div>
 
