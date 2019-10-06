@@ -5,7 +5,7 @@
 {% block body %}
     <div style="background-image:url('background.jpg');background-size:cover; position:absolute; top:0px;bottom:0px;left:0px;right:0px">
         <div style="position:absolute; left:15%;right:15%;top:0px;bottom:0px; background-color:white">
-            <div class="card" style="text-align:center; height: 80px;position:absolute;right: 35%;left:35%;top:10px">
+            <div class="card" style="text-align:center; height: 80px;position:absolute;right: 25%;left:25%;top:10px">
                 <div class="card-body">
                     <h1>
                         Neopardy
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div style="position:absolute; right:5%; top:4.5%">
-                <button onclick="window.location.href='/admin/game/new'" class="btn btn-dark">
+                <button onclick="window.location.href='/admin/game/new'" class="btn btn-dark" style="font-size:20px">
                     New Game
                 </button>
             </div>
@@ -38,6 +38,10 @@
                 <button onclick="window.location.href='https://github.com/Jugendhackt/neopardy-engine/'" class="btn btn-dark"
                     style="height: 70%; position: relative; top: 15%; left: 1%">
                     Find us on Github
+                </button>
+                <button class="btn btn-dark" style="position:absolute; left: 20%;top:15%;bottom:15%"
+                    onclick="window.location.href='praesi.odp'">
+                    Check out our presentation
                 </button>
             </div>
         </div>
