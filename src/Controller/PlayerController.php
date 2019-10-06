@@ -41,10 +41,7 @@ class PlayerController extends AbstractController
     {
         $username = $request->request->get('playername');
 
-        $player = $this->players->findOneBy([
-            'game' => $game->getId(),
-            'name' => $username
-            ]);
+        $player = $this->_getPlayerOrCreate($game, $username);
 
         dump($player);
 
@@ -81,7 +78,7 @@ class PlayerController extends AbstractController
         $categories = $game->getCategories();
         $playername = $request->request->get('playername');
 
-        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+        $player = $this->_getPlayerOrCreate($game, $playername);
 
         if ($player !== null)
         {
@@ -156,7 +153,7 @@ class PlayerController extends AbstractController
 
         dump($playername);
 
-        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+        $player = $this->_getPlayerOrCreate($game, $playername);
 
         if ($player === null)
         {
@@ -178,5 +175,31 @@ class PlayerController extends AbstractController
         $this->em->flush();
 
         return $this->json([]);
+    }
+
+    /**
+     * Check if the given player for a given game exists or create it
+     *
+     * @param Game $game
+     * @param String $playername
+     * @return Player
+     */
+    private function _getPlayerOrCreate(Game $game, ?String $playername)
+    {
+        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+        if (empty($playername))
+        {
+            return null;
+        }
+
+        if ($player === null)
+        {
+            $player = new Player();
+            $player->setGame($game);
+            $player->setName($playername);
+            $this->em->persist($player);
+            $this->em->flush();
+        }
+        return $player;
     }
 }

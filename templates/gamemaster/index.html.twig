@@ -3,47 +3,88 @@
 {% block title %}Hello GamemasterController!{% endblock %}
 
 {% block body %}
-
-    {# <table style="position: absolute; top: 0px;bottom:0px;left:0px;right:0px" class="table bordered">
-        <tr style="height: 50%">
-            <td style="width:80%; height:100%">
-                <h1 style="text-align: center; font-size: 100px">This is an answer!</h1>
-            </td>
-            <td style="background-color: green; width:20%;">
-                <a href="./" style="color: black; font-size:100px; text-align:center"><p>J</p></h1>
-            </td>
-        </tr>
-        <tr style="height: 100%">
-            <td>
-                <h1 style="text-align: center; font-size:100px">Is this a possible question?</h1>
-            </td>
-            <td style="background-color: red;">
-                <a href="./" style="height: 100%;position:relative; bottom:-20%;font-size: 100px; text-align: center; color: black">
-                <p>N</p>
-                </a>
-            </td>
-        </tr>
-    </table>
-    #}
-    <div style="position: absolute; top: 0px; bottom: 50.5%; right:20%; left: 0px;">
-        <h1 style="text-align: center; font-size: 100px;">This is the answer!</h1>
-    </div>
-    <a href="" style="color: black; text-align: center;">
-        <div style="background-color: green; position: absolute; top: 0px; left:80%; right: 0px; bottom: 50.5%;">
-            <p style="text-align: center; color: black;"><h1 style="font-size: 1500%">J</h1></p>
+    <div id="app" :class="{ 'bg-primary': solutionSubmitted }">
+        <div id="grid" v-show="!showAnswer">
+            <table class="table">
+                <tbody style="widht:100%">
+                    <template v-for="(row, rindex) in board">
+                        <tr :key="'tr-' + rindex" style="position:relative; height: 17%; width:100px">
+                            <template v-for="(cell, cindex) in row" >
+                                <td :key="'td-' + rindex + '-' + cindex" style="width: 25%">
+                                    <template v-if="!cell.points">
+                                        <h2 style="text-align: center;">[ cell.content ]</h2>
+                                    </template>
+                                    <template v-else-if="cell.correctPlayer">
+                                        <h2 class="text-center text-success">[ cell.correctPlayer ]</h2>
+                                    </template>
+                                    <template v-else>
+                                        <template v-if="cell.points">
+                                            <button @click="btnClicken(cell.qId)"
+                                            style="width: 100%; height: 75px; font-size:25pt">
+                                                [ cell.points ]
+                                            </button>
+                                        </template>
+                                        <template v-else></template>
+                                    </template>
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <ul>
+                <li class="text-right" v-for="player in players" >[ player.name ] ([ player.points ])</li>
+            </ul>
+            <div @click="reset">Reset</div>
         </div>
-    </a>
+        <div id="answer-screen" v-if="currentQuestion !== null">
+            <div style="position: absolute; top: 0px; bottom: 50.5%; right:20%; left: 0px;">
+                <h1 style="text-align: center; font-size: 100px;">[ currentQuestion.answer ]</h1>
+            </div>
+            <ol>
+                <li class="text-right" v-for="player in playerQueue" @click="onPlayerClick(player.id)">[ player.name ] ([ player.points ])</li>
+            </ol>
 
-    <div style="position: absolute; top:49.5%; bottom:49.5%; right: 0px; left: 0px; background-color:black; color:black;">.</div>
+            <div style="position: absolute; top:49.5%; bottom:49.5%; right: 0px; left: 0px; background-color:black; color:black;">.</div>
 
-    <div style="position:absolute; top: 50.5%; right: 20%; left: 0px">
-        <h1 style="text-align: center; font-size:75px;">Is this a possible question?</h1>
-    </div>
-    <a href="" style="color:black; text-align: center;">
-        <div style="position:absolute; right:0px; left:80%; bottom: 0px; top: 50.5%; background-color: red;">
-            <p style="text-align: center; color: black;"><h1 style="font-size: 1500%">N</h1></p>
+            <div style="position:absolute; top: 50.5%; right: 20%; left: 0px">
+                <h1 style="text-align: center; font-size:75px;">[ currentQuestion.solution ]</h1>
+            </div>
+            <div href="" style="color:black;"  class="select-none text-center" @click="reset">
+                <div style="position:absolute; right:0px; left:80%; bottom: 0px; top: 50.5%; background-color: red;">
+                    <p style="text-align: center; color: black;"><h1 style="font-size: 1500%">R</h1></p>
+                </div>
+            </div>
         </div>
-    </a>
+
+        <!-- Modals -->
+        <div class="modal" tabindex="-1" role="dialog" id="confirmationModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content" v-if="currentQuestion && currentPlayer">
+                <div class="modal-header">
+                    <h5 class="modal-title">[ currentQuestion.answer ] - [ currentQuestion.points ]</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-5">
+                        <p>[ currentQuestion.solution ]</p>
+                        <p>Für [ currentPlayer.name ] mit [ currentPlayer.points ] Punkten</p>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <button type="button" class="btn btn-block btn-danger" @click="incorrect">Falsch</button>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <button type="button" class="btn btn-block btn-success" @click="correct">Wahr</button>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
