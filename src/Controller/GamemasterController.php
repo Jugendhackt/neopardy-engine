@@ -207,6 +207,8 @@ class GamemasterController extends AbstractController
             $this->em->remove($player);
         }
 
+        $game->setCurrentQuestion(null);
+        $this->em->persist($game);
         $this->em->flush();
         return $this->json([]);
     }
