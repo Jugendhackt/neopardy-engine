@@ -3,11 +3,27 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Entity\Player;
+use App\Entity\Question;
+use App\Entity\GamePlayer;
+use App\Repository\PlayerRepository;
+use App\Repository\GamePlayerRepository;
+use App\Repository\QuestionRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class PlayerController extends AbstractController
 {
+    public function __construct(QuestionRepository $questions, PlayerRepository $players, EntityManagerInterface $em, GamePlayerRepository $gamePlayers)
+    {
+        $this->questions = $questions;
+        $this->players = $players;
+        $this->gamePlayers = $gamePlayers;
+        $this->em = $em;
+    }
+
     /**
      * @Route("/player", name="player")
      */
@@ -19,204 +35,171 @@ class PlayerController extends AbstractController
     }
 
     /**
-     * @route("/api/player/getBoard/{game}")
+     * @Route("/api/player/new/{game}", name="player_api_new")
      */
-    public function getBoard($game)
+    public function apiCreateNewPlayer(Game $game, PlayerRepository $players, Request $request)
     {
-        return $this->json([ 'board' =>[
-            [
-                'timestamp' => time(),
-                [
-                    'kind' => 'text',
-                    'content' => 'Computer'
-                ],
-                [
-                    'kind' => 'text',
-                    'content' => 'CCC'
-                ],
-                [
-                    'kind' => 'text',
-                    'content' => 'Klima'
-                ],
-                [
-                    'kind' => 'text',
-                    'content' => 'Luul'
+        $username = $request->request->get('playername');
+
+        $player = $this->_getPlayerOrCreate($game, $username);
+
+        dump($player);
+
+        if ($player !== null)
+        {
+            return $this->json([
+                'success' => 'ok',
+                'response' => [
+                    'playerId' => $player->getId()
                 ]
-            ],
-            [
-                [
-                    // 'kind' => 'question',
-                    'content' => 100,
-                    'answer' => 'i5 6500',
-                    'qId' => 10,
+            ]);
+        }
+
+        $player = new Player();
+        $player->setName($username);
+        $player->setGame($game);
+
+        $this->em->persist($player);
+        $this->em->flush();
+
+        return $this->json([
+            'success' => 'ok',
+            'response' => [
+                'playerId' => $player->getId()
+            ]
+        ]);
+    }
+
+    /**
+     * @route("/api/player/getBoard/{game}", name="player_api_get_board")
+     */
+    public function apiGetBoard(Game $game, Request $request)
+    {
+        $categories = $game->getCategories();
+        $playername = $request->request->get('playername');
+
+        $player = $this->_getPlayerOrCreate($game, $playername);
+
+        if ($player !== null)
+        {
+            $player = [
+                'name' => $player->getName(),
+                'id' => $player->getId(),
+                'points' => $player->getPoints()
+            ];
+        }
+
+        $titles = [];
+
+        $categoriesBase = [];
+
+        foreach ($categories as $categorie) {
+            $titles[] = ['content' => $categorie->getName()];
+            dump($categorie);
+
+            $questions = $this->questions->findBy(['category' => $categorie->getId()], ['points' => 'ASC']);
+
+            foreach ($questions as $key => $question) {
+                $correctPlayer = null;
+                if ($question->getCorrectPlayer() !== null)
+                {
+                    $correctPlayer = $question->getCorrectPlayer()->getName();
+                }
+
+                $currentAnswer = null;
+
+                if ($game->getCurrentQuestion() !== null)
+                {
+                    $currentAnswer = $game->getCurrentQuestion()->getAnswer();
+                }
+
+                $categoriesBase[$key][] = [
+                    'content' => $question->getAnswer(),
+                    'qId' => $question->getId(),
                     'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kind' => 'question',
-                    'content' => 100,
-                    'answer' => 'Ein Baum',
-                    'qId' => 11,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kind' => 'question',
-                    'content' => 100,
-                    'answer' => 'Ein Baum',
-                    'qId' => 12,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kind' => 'question',
-                    'content' => 100,
-                    'answer' => 'Ein Baum',
-                    'qId' => 13,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ]
-            ],
-            [
-                [
-                    // 'kinde' => 'question',
-                    'content' => 200,
-                    'answer' => 'i9 9900k',
-                    'qId' => 20,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 200,
-                    'answer' => 'i9 9900k',
-                    'qId' => 21,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 200,
-                    'answer' => 'i9 9900k',
-                    'qId' => 22,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 200,
-                    'answer' => 'i9 9900k',
-                    'qId' => 23,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ]
-                
-            ],
-            [
-                [
-                    // 'kinde' => 'question',
-                    'content' => 300,
-                    'answer' => 'i9 9900k',
-                    'qId' => 30,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 300,
-                    'answer' => 'i9 9900k',
-                    'qId' => 31,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 300,
-                    'answer' => 'i9 9900k',
-                    'qId' => 32,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 300,
-                    'answer' => 'i9 9900k',
-                    'qId' => 33,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ]
-                
-            ],
-            [
-                [
-                    // 'kinde' => 'question',
-                    'content' => 400,
-                    'answer' => 'i9 9900k',
-                    'qId' => 40,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 400,
-                    'answer' => 'i9 9900k',
-                    'qId' => 41,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 400,
-                    'answer' => 'i9 9900k',
-                    'qId' => 42,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 400,
-                    'answer' => 'i9 9900k',
-                    'qId' => 43,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ]
-                
-            ],
-            [
-                [
-                    // 'kinde' => 'question',
-                    'content' => 500,
-                    'answer' => 'i9 9900k',
-                    'qId' => 50,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 500,
-                    'answer' => 'i9 9900k',
-                    'qId' => 51,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 500,
-                    'answer' => 'i9 9900k',
-                    'qId' => 52,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ],
-                [
-                    // 'kinde' => 'question',
-                    'content' => 500,
-                    'answer' => 'i9 9900k',
-                    'qId' => 53,
-                    'playable' => true,
-                    'correctPlayer' => null
-                ]
-                
-            ],
-        ]]);
+                    'correctPlayer' => $correctPlayer,
+                    'points' => $question->getPoints()
+                ];
+            }
+        }
+
+        array_unshift($categoriesBase, $titles);
+        dump($categoriesBase);
+
+        return $this->json(['board' => $categoriesBase, 'currentAnswer' => $currentAnswer, 'player' => $player]);
+    }
+
+    /**
+     * @Route("/api/player/selectQuestion/{game}", name="player_api_question_select")
+     */
+    public function apiQuestionSelect(Game $game, Request $request)
+    {
+        $qId = $request->request->get('qId');
+
+        $question = $this->questions->find($qId);
+        $game->setCurrentQuestion($question);
+        $this->em->persist($game);
+        $this->em->flush();
+
+        return $this->json([]);
+    }
+
+    /**
+     * @Route("/api/player/solutionSubmitted/{game}", name="player_api_solution_submitted")
+     */
+    public function apiSolutionSubmitted(Game $game, Request $request)
+    {
+        $playername = $request->request->get('playername');
+
+        dump($playername);
+
+        $player = $this->_getPlayerOrCreate($game, $playername);
+
+        if ($player === null)
+        {
+            return $this->json([]);
+        }
+
+        $gamePlayer = $this->gamePlayers->findOneBy(['player' => $player->getId(), 'game' => $game->getId()]);
+
+        if ($gamePlayer !== null)
+        {
+            return $this->json([]);
+        }
+
+        $gamePlayer = new GamePlayer();
+        $gamePlayer->setGame($game);
+        $gamePlayer->setPlayer($player);
+
+        $this->em->persist($gamePlayer);
+        $this->em->flush();
+
+        return $this->json([]);
+    }
+
+    /**
+     * Check if the given player for a given game exists or create it
+     *
+     * @param Game $game
+     * @param String $playername
+     * @return Player
+     */
+    private function _getPlayerOrCreate(Game $game, ?String $playername)
+    {
+        $player = $this->players->findOneBy(['game' => $game->getId(), 'name' => $playername]);
+        if (empty($playername))
+        {
+            return null;
+        }
+
+        if ($player === null)
+        {
+            $player = new Player();
+            $player->setGame($game);
+            $player->setName($playername);
+            $this->em->persist($player);
+            $this->em->flush();
+        }
+        return $player;
     }
 }

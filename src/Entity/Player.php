@@ -34,13 +34,20 @@ class Player
     private $game;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Question", mappedBy="player")
+     * @ORM\OneToMany(targetEntity="App\Entity\GamePlayer", mappedBy="player")
      */
-    private $questions;
+    private $gamePlayers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Question", mappedBy="correctPlayer")
+     */
+    private $correctQuestions;
 
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->questionPlayers = new ArrayCollection();
+        $this->gamePlayers = new ArrayCollection();
+        $this->correctQuestions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,36 +91,70 @@ class Player
         return $this;
     }
 
-    /**
-     * @return Collection|Question[]
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
-    public function addQuestion(Question $question): self
-    {
-        if (!$this->questions->contains($question)) {
-            $this->questions[] = $question;
-            $question->addPlayer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuestion(Question $question): self
-    {
-        if ($this->questions->contains($question)) {
-            $this->questions->removeElement($question);
-            $question->removePlayer($this);
-        }
-
-        return $this;
-    }
-
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @return Collection|GamePlayer[]
+     */
+    public function getGamePlayers(): Collection
+    {
+        return $this->gamePlayers;
+    }
+
+    public function addGamePlayer(GamePlayer $gamePlayer): self
+    {
+        if (!$this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers[] = $gamePlayer;
+            $gamePlayer->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGamePlayer(GamePlayer $gamePlayer): self
+    {
+        if ($this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers->removeElement($gamePlayer);
+            // set the owning side to null (unless already changed)
+            if ($gamePlayer->getPlayer() === $this) {
+                $gamePlayer->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Question[]
+     */
+    public function getCorrectQuestions(): Collection
+    {
+        return $this->correctQuestions;
+    }
+
+    public function addCorrectQuestion(Question $correctQuestion): self
+    {
+        if (!$this->correctQuestions->contains($correctQuestion)) {
+            $this->correctQuestions[] = $correctQuestion;
+            $correctQuestion->setCorrectPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCorrectQuestion(Question $correctQuestion): self
+    {
+        if ($this->correctQuestions->contains($correctQuestion)) {
+            $this->correctQuestions->removeElement($correctQuestion);
+            // set the owning side to null (unless already changed)
+            if ($correctQuestion->getCorrectPlayer() === $this) {
+                $correctQuestion->setCorrectPlayer(null);
+            }
+        }
+
+        return $this;
     }
 }

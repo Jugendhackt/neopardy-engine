@@ -33,10 +33,21 @@ class Game
      */
     private $categories;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Question")
+     */
+    private $currentQuestion;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\GamePlayer", mappedBy="game", orphanRemoval=true)
+     */
+    private $gamePlayers;
+
     public function __construct()
     {
         $this->players = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->gamePlayers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,5 +131,48 @@ class Game
 
     public function __toString() {
         return $this->name;
+    }
+
+    public function getCurrentQuestion(): ?Question
+    {
+        return $this->currentQuestion;
+    }
+
+    public function setCurrentQuestion(?Question $currentQuestion): self
+    {
+        $this->currentQuestion = $currentQuestion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|GamePlayer[]
+     */
+    public function getGamePlayers(): Collection
+    {
+        return $this->gamePlayers;
+    }
+
+    public function addGamePlayer(GamePlayer $gamePlayer): self
+    {
+        if (!$this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers[] = $gamePlayer;
+            $gamePlayer->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGamePlayer(GamePlayer $gamePlayer): self
+    {
+        if ($this->gamePlayers->contains($gamePlayer)) {
+            $this->gamePlayers->removeElement($gamePlayer);
+            // set the owning side to null (unless already changed)
+            if ($gamePlayer->getGame() === $this) {
+                $gamePlayer->setGame(null);
+            }
+        }
+
+        return $this;
     }
 }

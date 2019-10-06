@@ -35,18 +35,19 @@ class Question
     private $category;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Player", inversedBy="questions")
-     */
-    private $player;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $solution;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Player", inversedBy="correctQuestions")
+     */
+    private $correctPlayer;
+
     public function __construct()
     {
         $this->player = new ArrayCollection();
+        $this->questionPlayers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,32 +91,6 @@ class Question
         return $this;
     }
 
-    /**
-     * @return Collection|Player[]
-     */
-    public function getPlayer(): Collection
-    {
-        return $this->player;
-    }
-
-    public function addPlayer(Player $player): self
-    {
-        if (!$this->player->contains($player)) {
-            $this->player[] = $player;
-        }
-
-        return $this;
-    }
-
-    public function removePlayer(Player $player): self
-    {
-        if ($this->player->contains($player)) {
-            $this->player->removeElement($player);
-        }
-
-        return $this;
-    }
-
     public function getSolution(): ?string
     {
         return $this->solution;
@@ -131,5 +106,17 @@ class Question
     public function __toString()
     {
         return $this->getAnswer() . ' - ' . $this->getSolution();
+    }
+
+    public function getCorrectPlayer(): ?Player
+    {
+        return $this->correctPlayer;
+    }
+
+    public function setCorrectPlayer(?Player $correctPlayer): self
+    {
+        $this->correctPlayer = $correctPlayer;
+
+        return $this;
     }
 }
